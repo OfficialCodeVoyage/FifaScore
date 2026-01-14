@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, PlusCircle, Shuffle, BarChart3, Trophy, History } from "lucide-react"
+import { Home, PlusCircle, Shuffle, BarChart3, Trophy } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
   { href: "/random", label: "Random", icon: Shuffle },
   { href: "/match/new", label: "New", icon: PlusCircle, highlight: true },
   { href: "/stats", label: "Stats", icon: BarChart3 },
-  { href: "/history", label: "History", icon: History },
+  { href: "/achievements", label: "Badges", icon: Trophy },
 ]
 
 export interface NavigationProps extends React.HTMLAttributes<HTMLElement> {}
