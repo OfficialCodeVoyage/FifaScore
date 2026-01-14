@@ -1,14 +1,14 @@
 import { Team } from './data'
 
 export const teams: Team[] = [
-  // La Liga
+  // La Liga (5-star & 4.5-star teams)
   {
     id: 1,
     name: "Real Madrid",
     shortName: "RMA",
-    logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+    logo: "/logos/real-madrid.svg",
     league: "La Liga",
-    rating: 90,
+    rating: 86,
     primaryColor: "#FFFFFF",
     secondaryColor: "#00529F"
   },
@@ -16,9 +16,9 @@ export const teams: Team[] = [
     id: 2,
     name: "Barcelona",
     shortName: "BAR",
-    logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+    logo: "/logos/barcelona.svg",
     league: "La Liga",
-    rating: 89,
+    rating: 85,
     primaryColor: "#A50044",
     secondaryColor: "#004D98"
   },
@@ -26,345 +26,449 @@ export const teams: Team[] = [
     id: 3,
     name: "Atletico Madrid",
     shortName: "ATM",
-    logo: "https://upload.wikimedia.org/wikipedia/en/c/c1/Atletico_Madrid_logo.svg",
+    logo: "/logos/atletico-madrid.svg",
     league: "La Liga",
-    rating: 85,
+    rating: 83,
     primaryColor: "#CB3524",
     secondaryColor: "#FFFFFF"
   },
   {
     id: 4,
-    name: "Sevilla",
-    shortName: "SEV",
-    logo: "https://upload.wikimedia.org/wikipedia/en/3/3b/Sevilla_FC_logo.svg",
+    name: "Real Sociedad",
+    shortName: "RSO",
+    logo: "/logos/real-sociedad.svg",
     league: "La Liga",
-    rating: 82,
-    primaryColor: "#FFFFFF",
-    secondaryColor: "#D4001F"
+    rating: 81,
+    primaryColor: "#0067B1",
+    secondaryColor: "#FFFFFF"
   },
-
-  // Premier League
   {
     id: 5,
+    name: "Villarreal",
+    shortName: "VIL",
+    logo: "/logos/villarreal.svg",
+    league: "La Liga",
+    rating: 80,
+    primaryColor: "#FFE114",
+    secondaryColor: "#005DAA"
+  },
+
+  // Premier League (5-star & 4.5-star teams)
+  {
+    id: 6,
     name: "Manchester City",
     shortName: "MCI",
-    logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+    logo: "/logos/man-city.svg",
     league: "Premier League",
-    rating: 91,
+    rating: 85,
     primaryColor: "#6CABDD",
     secondaryColor: "#1C2C5B"
   },
   {
-    id: 6,
+    id: 7,
     name: "Liverpool",
     shortName: "LIV",
-    logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg",
+    logo: "/logos/liverpool.svg",
     league: "Premier League",
-    rating: 89,
+    rating: 84,
     primaryColor: "#C8102E",
     secondaryColor: "#00B2A9"
   },
   {
-    id: 7,
+    id: 8,
     name: "Arsenal",
     shortName: "ARS",
-    logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
+    logo: "/logos/arsenal.svg",
     league: "Premier League",
-    rating: 87,
+    rating: 84,
     primaryColor: "#EF0107",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 8,
+    id: 9,
     name: "Chelsea",
     shortName: "CHE",
-    logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+    logo: "/logos/chelsea.svg",
     league: "Premier League",
-    rating: 86,
+    rating: 83,
     primaryColor: "#034694",
     secondaryColor: "#DBA111"
   },
   {
-    id: 9,
+    id: 10,
     name: "Manchester United",
     shortName: "MUN",
-    logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
+    logo: "/logos/man-united.svg",
     league: "Premier League",
-    rating: 85,
+    rating: 82,
     primaryColor: "#DA291C",
     secondaryColor: "#FBE122"
   },
   {
-    id: 10,
+    id: 11,
     name: "Tottenham",
     shortName: "TOT",
-    logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg",
+    logo: "/logos/tottenham.svg",
     league: "Premier League",
-    rating: 84,
+    rating: 82,
     primaryColor: "#132257",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 11,
+    id: 12,
     name: "Newcastle",
     shortName: "NEW",
-    logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg",
+    logo: "/logos/newcastle.svg",
     league: "Premier League",
-    rating: 82,
+    rating: 81,
     primaryColor: "#241F20",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 12,
+    id: 13,
     name: "Aston Villa",
     shortName: "AVL",
-    logo: "https://upload.wikimedia.org/wikipedia/en/9/9a/Aston_Villa_FC_new_crest.svg",
+    logo: "/logos/aston-villa.svg",
     league: "Premier League",
     rating: 81,
     primaryColor: "#95BFE5",
     secondaryColor: "#670E36"
   },
-
-  // Bundesliga
   {
-    id: 13,
+    id: 14,
+    name: "Brighton",
+    shortName: "BHA",
+    logo: "/logos/brighton.svg",
+    league: "Premier League",
+    rating: 80,
+    primaryColor: "#0057B8",
+    secondaryColor: "#FFFFFF"
+  },
+  {
+    id: 15,
+    name: "West Ham",
+    shortName: "WHU",
+    logo: "/logos/west-ham.svg",
+    league: "Premier League",
+    rating: 79,
+    primaryColor: "#7A263A",
+    secondaryColor: "#1BB1E7"
+  },
+
+  // Bundesliga (5-star & 4.5-star teams)
+  {
+    id: 16,
     name: "Bayern Munich",
     shortName: "BAY",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg",
+    logo: "/logos/bayern.svg",
     league: "Bundesliga",
-    rating: 90,
+    rating: 85,
     primaryColor: "#DC052D",
     secondaryColor: "#0066B2"
   },
   {
-    id: 14,
+    id: 17,
     name: "Borussia Dortmund",
     shortName: "BVB",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg",
+    logo: "/logos/dortmund.svg",
     league: "Bundesliga",
-    rating: 86,
+    rating: 82,
     primaryColor: "#FDE100",
     secondaryColor: "#000000"
   },
   {
-    id: 15,
-    name: "RB Leipzig",
-    shortName: "RBL",
-    logo: "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg",
-    league: "Bundesliga",
-    rating: 84,
-    primaryColor: "#DD0741",
-    secondaryColor: "#FFFFFF"
-  },
-  {
-    id: 16,
+    id: 18,
     name: "Bayer Leverkusen",
     shortName: "LEV",
-    logo: "https://upload.wikimedia.org/wikipedia/en/5/59/Bayer_04_Leverkusen_logo.svg",
+    logo: "/logos/leverkusen.svg",
     league: "Bundesliga",
     rating: 83,
     primaryColor: "#E32221",
     secondaryColor: "#000000"
   },
-
-  // Serie A
-  {
-    id: 17,
-    name: "Inter Milan",
-    shortName: "INT",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg",
-    league: "Serie A",
-    rating: 87,
-    primaryColor: "#010E80",
-    secondaryColor: "#000000"
-  },
-  {
-    id: 18,
-    name: "AC Milan",
-    shortName: "ACM",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg",
-    league: "Serie A",
-    rating: 86,
-    primaryColor: "#FB090B",
-    secondaryColor: "#000000"
-  },
   {
     id: 19,
-    name: "Juventus",
-    shortName: "JUV",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Juventus_FC_-_pictogram.svg",
-    league: "Serie A",
-    rating: 85,
-    primaryColor: "#000000",
+    name: "RB Leipzig",
+    shortName: "RBL",
+    logo: "/logos/leipzig.svg",
+    league: "Bundesliga",
+    rating: 81,
+    primaryColor: "#DD0741",
     secondaryColor: "#FFFFFF"
   },
   {
     id: 20,
+    name: "Eintracht Frankfurt",
+    shortName: "SGE",
+    logo: "/logos/frankfurt.svg",
+    league: "Bundesliga",
+    rating: 79,
+    primaryColor: "#E1000F",
+    secondaryColor: "#000000"
+  },
+
+  // Serie A (5-star & 4.5-star teams)
+  {
+    id: 21,
+    name: "Inter Milan",
+    shortName: "INT",
+    logo: "/logos/inter.svg",
+    league: "Serie A",
+    rating: 84,
+    primaryColor: "#010E80",
+    secondaryColor: "#000000"
+  },
+  {
+    id: 22,
+    name: "AC Milan",
+    shortName: "ACM",
+    logo: "/logos/ac-milan.svg",
+    league: "Serie A",
+    rating: 82,
+    primaryColor: "#FB090B",
+    secondaryColor: "#000000"
+  },
+  {
+    id: 23,
+    name: "Juventus",
+    shortName: "JUV",
+    logo: "/logos/juventus.svg",
+    league: "Serie A",
+    rating: 82,
+    primaryColor: "#000000",
+    secondaryColor: "#FFFFFF"
+  },
+  {
+    id: 24,
     name: "Napoli",
     shortName: "NAP",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Neapel.svg",
+    logo: "/logos/napoli.svg",
     league: "Serie A",
-    rating: 85,
+    rating: 82,
     primaryColor: "#12A0D7",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 21,
+    id: 25,
+    name: "Atalanta",
+    shortName: "ATA",
+    logo: "/logos/atalanta.svg",
+    league: "Serie A",
+    rating: 81,
+    primaryColor: "#1E71B8",
+    secondaryColor: "#000000"
+  },
+  {
+    id: 26,
     name: "Roma",
     shortName: "ROM",
-    logo: "https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg",
+    logo: "/logos/roma.svg",
     league: "Serie A",
-    rating: 83,
+    rating: 80,
     primaryColor: "#8E1F2F",
     secondaryColor: "#F0BC42"
   },
   {
-    id: 22,
+    id: 27,
     name: "Lazio",
     shortName: "LAZ",
-    logo: "https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg",
+    logo: "/logos/lazio.svg",
     league: "Serie A",
-    rating: 82,
+    rating: 79,
     primaryColor: "#87D8F7",
     secondaryColor: "#FFFFFF"
   },
 
-  // Ligue 1
+  // Ligue 1 (5-star & 4.5-star teams)
   {
-    id: 23,
+    id: 28,
     name: "Paris Saint-Germain",
     shortName: "PSG",
-    logo: "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
+    logo: "/logos/psg.svg",
     league: "Ligue 1",
-    rating: 88,
+    rating: 84,
     primaryColor: "#004170",
     secondaryColor: "#DA291C"
   },
   {
-    id: 24,
+    id: 29,
     name: "Marseille",
     shortName: "OM",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Olympique_Marseille_logo.svg",
+    logo: "/logos/marseille.svg",
     league: "Ligue 1",
-    rating: 82,
+    rating: 80,
     primaryColor: "#2FAEE0",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 25,
+    id: 30,
     name: "Monaco",
     shortName: "MON",
-    logo: "https://upload.wikimedia.org/wikipedia/en/c/cf/AS_Monaco_FC_%282024%29.svg",
+    logo: "/logos/monaco.svg",
     league: "Ligue 1",
-    rating: 81,
+    rating: 80,
     primaryColor: "#E30613",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 26,
+    id: 31,
     name: "Lyon",
     shortName: "LYO",
-    logo: "https://upload.wikimedia.org/wikipedia/en/a/a5/Olympique_Lyonnais_%28crest%29.svg",
+    logo: "/logos/lyon.svg",
     league: "Ligue 1",
-    rating: 80,
+    rating: 79,
     primaryColor: "#0C3D72",
     secondaryColor: "#DA291C"
   },
 
-  // Primeira Liga
+  // Portuguese Liga
   {
-    id: 27,
+    id: 32,
     name: "Benfica",
     shortName: "BEN",
-    logo: "https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg",
+    logo: "/logos/benfica.svg",
     league: "Primeira Liga",
-    rating: 82,
+    rating: 81,
     primaryColor: "#E41B23",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 28,
+    id: 33,
     name: "Porto",
     shortName: "POR",
-    logo: "https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg",
+    logo: "/logos/porto.svg",
     league: "Primeira Liga",
-    rating: 82,
+    rating: 80,
     primaryColor: "#003893",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 29,
+    id: 34,
     name: "Sporting CP",
     shortName: "SCP",
-    logo: "https://upload.wikimedia.org/wikipedia/en/e/e1/Sporting_Clube_de_Portugal_%28Logo%29.svg",
+    logo: "/logos/sporting.svg",
     league: "Primeira Liga",
-    rating: 81,
+    rating: 80,
     primaryColor: "#00A54F",
     secondaryColor: "#FFFFFF"
   },
 
   // Eredivisie
   {
-    id: 30,
+    id: 35,
     name: "Ajax",
     shortName: "AJA",
-    logo: "https://upload.wikimedia.org/wikipedia/en/7/79/Ajax_Amsterdam.svg",
+    logo: "/logos/ajax.svg",
     league: "Eredivisie",
-    rating: 81,
+    rating: 79,
     primaryColor: "#D2122E",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 31,
+    id: 36,
     name: "PSV Eindhoven",
     shortName: "PSV",
-    logo: "https://upload.wikimedia.org/wikipedia/en/0/05/PSV_Eindhoven.svg",
+    logo: "/logos/psv.svg",
     league: "Eredivisie",
-    rating: 80,
+    rating: 79,
     primaryColor: "#ED1C24",
     secondaryColor: "#FFFFFF"
   },
 
-  // Other
+  // Saudi Pro League
   {
-    id: 32,
+    id: 37,
+    name: "Al Nassr",
+    shortName: "NAS",
+    logo: "/logos/al-nassr.svg",
+    league: "Saudi Pro League",
+    rating: 81,
+    primaryColor: "#FFCC00",
+    secondaryColor: "#003366"
+  },
+  {
+    id: 38,
+    name: "Al Hilal",
+    shortName: "HIL",
+    logo: "/logos/al-hilal.svg",
+    league: "Saudi Pro League",
+    rating: 82,
+    primaryColor: "#003399",
+    secondaryColor: "#FFFFFF"
+  },
+  {
+    id: 39,
+    name: "Al Ittihad",
+    shortName: "ITT",
+    logo: "/logos/al-ittihad.svg",
+    league: "Saudi Pro League",
+    rating: 80,
+    primaryColor: "#000000",
+    secondaryColor: "#FFD700"
+  },
+
+  // Other Top Leagues
+  {
+    id: 40,
     name: "Celtic",
     shortName: "CEL",
-    logo: "https://upload.wikimedia.org/wikipedia/en/3/35/Celtic_FC.svg",
+    logo: "/logos/celtic.svg",
     league: "Scottish Premiership",
-    rating: 78,
+    rating: 77,
     primaryColor: "#008844",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 33,
+    id: 41,
     name: "Rangers",
     shortName: "RAN",
-    logo: "https://upload.wikimedia.org/wikipedia/en/4/43/Rangers_FC.svg",
+    logo: "/logos/rangers.svg",
     league: "Scottish Premiership",
-    rating: 77,
+    rating: 76,
     primaryColor: "#1B458F",
     secondaryColor: "#FFFFFF"
   },
   {
-    id: 34,
+    id: 42,
     name: "Galatasaray",
     shortName: "GAL",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Galatasaray_Sports_Club_Logo.svg",
+    logo: "/logos/galatasaray.svg",
     league: "Super Lig",
     rating: 79,
     primaryColor: "#FDB913",
     secondaryColor: "#C2171C"
   },
   {
-    id: 35,
+    id: 43,
     name: "Fenerbahce",
     shortName: "FEN",
-    logo: "https://upload.wikimedia.org/wikipedia/en/0/07/Fenerbah%C3%A7e_SK.svg",
+    logo: "/logos/fenerbahce.svg",
     league: "Super Lig",
     rating: 78,
     primaryColor: "#FFED00",
     secondaryColor: "#00235D"
+  },
+
+  // MLS Top Teams
+  {
+    id: 44,
+    name: "Inter Miami",
+    shortName: "MIA",
+    logo: "/logos/inter-miami.svg",
+    league: "MLS",
+    rating: 80,
+    primaryColor: "#F5B5C8",
+    secondaryColor: "#231F20"
+  },
+  {
+    id: 45,
+    name: "LA Galaxy",
+    shortName: "LAG",
+    logo: "/logos/la-galaxy.svg",
+    league: "MLS",
+    rating: 77,
+    primaryColor: "#00245D",
+    secondaryColor: "#FFD200"
   }
 ]
 
@@ -378,4 +482,26 @@ export function getTeamsByLeague(league: string): Team[] {
 
 export function getAllLeagues(): string[] {
   return [...new Set(teams.map(team => team.league))]
+}
+
+export function getRandomBalancedTeams(ratingRange: number = 3): [Team, Team] {
+  // Pick a random first team
+  const team1 = teams[Math.floor(Math.random() * teams.length)]
+
+  // Find teams within rating range (excluding team1)
+  const eligibleTeams = teams.filter(
+    t => t.id !== team1.id && Math.abs(t.rating - team1.rating) <= ratingRange
+  )
+
+  // If no teams in range, expand search or pick any different team
+  let team2: Team
+  if (eligibleTeams.length > 0) {
+    team2 = eligibleTeams[Math.floor(Math.random() * eligibleTeams.length)]
+  } else {
+    // Fallback: pick any team that's not team1
+    const otherTeams = teams.filter(t => t.id !== team1.id)
+    team2 = otherTeams[Math.floor(Math.random() * otherTeams.length)]
+  }
+
+  return [team1, team2]
 }

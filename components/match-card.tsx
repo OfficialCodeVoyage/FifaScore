@@ -5,6 +5,7 @@ import { MessageCircle, Calendar, Trophy } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { TeamLogo } from "@/components/team-logo"
 
 export interface MatchCardProps extends React.HTMLAttributes<HTMLDivElement> {
   team1Name: string
@@ -81,10 +82,11 @@ const MatchCard = React.forwardRef<HTMLDivElement, MatchCardProps>(
                 team1Won && "scale-110"
               )}>
                 {team1Logo ? (
-                  <img
+                  <TeamLogo
                     src={team1Logo}
                     alt={team1Name}
                     className="w-full h-full object-contain"
+                    fallbackClassName="w-full h-full text-sm font-bold text-gray-800"
                   />
                 ) : (
                   <span className="text-sm font-bold text-gray-800">
@@ -155,10 +157,11 @@ const MatchCard = React.forwardRef<HTMLDivElement, MatchCardProps>(
                 team2Won && "scale-110"
               )}>
                 {team2Logo ? (
-                  <img
+                  <TeamLogo
                     src={team2Logo}
                     alt={team2Name}
                     className="w-full h-full object-contain"
+                    fallbackClassName="w-full h-full text-sm font-bold text-gray-800"
                   />
                 ) : (
                   <span className="text-sm font-bold text-gray-800">

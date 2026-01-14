@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ArrowLeft, Trophy, Swords, Clock, Target } from "lucide-react"
 import Link from "next/link"
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,6 +15,7 @@ import { getTeamById } from "@/lib/teams"
 
 export default function NewMatchPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { showAchievements } = useAchievementToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -22,6 +23,15 @@ export default function NewMatchPage() {
   // Form state
   const [player1TeamId, setPlayer1TeamId] = useState<string>("")
   const [player2TeamId, setPlayer2TeamId] = useState<string>("")
+
+  // Pre-fill from URL params (from Random page)
+  useEffect(() => {
+    const p1Team = searchParams.get("p1Team")
+    const p2Team = searchParams.get("p2Team")
+    if (p1Team) setPlayer1TeamId(p1Team)
+    if (p2Team) setPlayer2TeamId(p2Team)
+  }, [searchParams])
+
   const [player1Score, setPlayer1Score] = useState<number>(0)
   const [player2Score, setPlayer2Score] = useState<number>(0)
   const [extraTime, setExtraTime] = useState(false)

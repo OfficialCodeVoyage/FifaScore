@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { PlusCircle, Flame, TrendingUp, Trophy, Swords } from "lucide-react"
+import { PlusCircle, Flame, TrendingUp, Trophy } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -89,10 +89,6 @@ export default async function DashboardPage() {
               <span className="text-primary">FIFA</span>
               <span className="text-foreground">Score</span>
             </h1>
-            <p className="text-muted-foreground text-sm flex items-center gap-2 mt-1">
-              <Swords className="h-4 w-4" />
-              Head-to-Head Rivalry Tracker
-            </p>
           </div>
           <Link href="/match/new">
             <Button size="lg" className="gap-2 fifa-gradient-green text-primary-foreground shadow-lg hover:shadow-xl transition-all">
@@ -105,14 +101,7 @@ export default async function DashboardPage() {
         {/* Head to Head Card */}
         <div className="fifa-card mb-6 overflow-hidden">
           <div className="fifa-gradient-pitch pitch-pattern">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-center text-lg flex items-center justify-center gap-2 text-white text-overlay-dark">
-                <Trophy className="h-5 w-5 text-amber-400" />
-                Head to Head
-                <Trophy className="h-5 w-5 text-amber-400" />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pb-6">
+            <CardContent className="py-6">
               <div className="flex items-center justify-between">
                 {/* Player 1 */}
                 <div className="flex flex-col items-center flex-1">

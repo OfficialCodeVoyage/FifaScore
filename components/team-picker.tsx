@@ -6,6 +6,7 @@ import { Search, X, Star, ChevronDown, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Team } from "@/lib/data"
 import { teams, getAllLeagues } from "@/lib/teams"
+import { TeamLogo } from "@/components/team-logo"
 
 interface TeamPickerProps {
   value: string
@@ -101,7 +102,7 @@ export function TeamPicker({
                 boxShadow: `0 4px 12px ${selectedTeam.primaryColor}40`,
               }}
             >
-              <img
+              <TeamLogo
                 src={selectedTeam.logo}
                 alt={selectedTeam.name}
                 className="w-full h-full object-contain"
@@ -163,7 +164,6 @@ export function TeamPicker({
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search teams..."
                   className="w-full h-12 pl-11 pr-4 rounded-xl bg-muted/30 border border-border/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground"
-                  autoFocus
                 />
                 {search && (
                   <button
@@ -250,7 +250,7 @@ export function TeamPicker({
                               isSelected && "shadow-lg ring-2 ring-primary/30"
                             )}
                           >
-                            <img
+                            <TeamLogo
                               src={team.logo}
                               alt={team.name}
                               className="w-full h-full object-contain"
