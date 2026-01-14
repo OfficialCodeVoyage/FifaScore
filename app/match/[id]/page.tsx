@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Clock, MessageCircle, Send } from "lucide-react"
+import { ArrowLeft, Clock, MessageCircle, Send, Trash2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -60,6 +60,10 @@ export default function MatchDetailPage() {
   const [selectedPlayer, setSelectedPlayer] = useState<string>("1")
   const [submittingComment, setSubmittingComment] = useState(false)
 
+  // Delete state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
   useEffect(() => {
     async function fetchMatch() {
       try {
@@ -113,6 +117,26 @@ export default function MatchDetailPage() {
       console.error("Error adding comment:", err)
     } finally {
       setSubmittingComment(false)
+    }
+  }
+
+  const handleDeleteMatch = async () => {
+    setDeleting(true)
+    try {
+      const response = await fetch(`/api/matches/${params.id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete match")
+      }
+
+      router.push("/")
+    } catch (err) {
+      console.error("Error deleting match:", err)
+      setShowDeleteConfirm(false)
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -177,20 +201,58 @@ export default function MatchDetailPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold">Match Details</h1>
-          <p className="text-muted-foreground text-sm flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {formatDate(match.date)}
-          </p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Link href="/">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold">Match Details</h1>
+            <p className="text-muted-foreground text-sm flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {formatDate(match.date)}
+            </p>
+          </div>
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          <Trash2 className="h-5 w-5" />
+        </Button>
       </div>
+
+      {/* Delete Confirmation */}
+      {showDeleteConfirm && (
+        <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/30">
+          <p className="text-sm font-medium mb-3">Delete this match?</p>
+          <p className="text-xs text-muted-foreground mb-4">
+            This will also delete all comments and achievements from this match.
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDeleteMatch}
+              disabled={deleting}
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDeleteConfirm(false)}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Match Result Card */}
       <Card className="mb-6">

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getMatch, getComments, getPlayers, ensureDatabase } from '@/lib/queries'
+import { deleteMatch } from '@/lib/db'
 import { getTeamById } from '@/lib/teams'
 
 interface RouteParams {
@@ -70,6 +71,41 @@ export async function GET(
     console.error('Error fetching match:', error)
     return NextResponse.json(
       { error: 'Failed to fetch match' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: RouteParams
+) {
+  try {
+    await ensureDatabase()
+    const { id } = await params
+    const matchId = parseInt(id)
+
+    if (isNaN(matchId)) {
+      return NextResponse.json(
+        { error: 'Invalid match ID' },
+        { status: 400 }
+      )
+    }
+
+    const deleted = await deleteMatch(matchId)
+
+    if (!deleted) {
+      return NextResponse.json(
+        { error: 'Match not found or could not be deleted' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting match:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete match' },
       { status: 500 }
     )
   }

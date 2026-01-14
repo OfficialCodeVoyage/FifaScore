@@ -187,6 +187,21 @@ export async function addMatch(data: AddMatchData): Promise<Match> {
   }
 }
 
+export async function deleteMatch(id: number): Promise<boolean> {
+  try {
+    // Delete related comments first
+    await sql`DELETE FROM comments WHERE match_id = ${id}`
+    // Delete related achievements
+    await sql`DELETE FROM achievements WHERE match_id = ${id}`
+    // Delete the match
+    const { rowCount } = await sql`DELETE FROM matches WHERE id = ${id}`
+    return (rowCount ?? 0) > 0
+  } catch (error) {
+    console.error('Error deleting match:', error)
+    return false
+  }
+}
+
 // ============ Comments ============
 
 export async function getComments(matchId: number): Promise<Comment[]> {

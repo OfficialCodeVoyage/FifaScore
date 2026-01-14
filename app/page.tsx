@@ -7,6 +7,10 @@ import { readDatabase, initializeDatabase } from "@/lib/db"
 import { getTeamById } from "@/lib/teams"
 import { Database } from "@/lib/data"
 
+// Disable caching to always show fresh stats
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 function calculateStats(matches: Database['matches'], players: Database['players']) {
   const player1 = players.find((p) => p.id === 1)
   const player2 = players.find((p) => p.id === 2)
