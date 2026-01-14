@@ -12,7 +12,11 @@ import {
   Flame,
   BarChart3,
   Star,
+  Award,
+  ChevronRight,
 } from "lucide-react"
+import Link from "next/link"
+import { achievementTypes } from "@/lib/achievements"
 import { Skeleton, SkeletonCard } from "@/components/skeleton"
 import {
   BarChart,
@@ -61,6 +65,7 @@ interface StatsData {
   player1Stats: PlayerStats | null
   player2Stats: PlayerStats | null
   totalMatches: number
+  achievementCounts?: { player1: number; player2: number }
 }
 
 export default function StatsPage() {
@@ -392,6 +397,55 @@ export default function StatsPage() {
             </CardContent>
           </div>
         </div>
+
+        {/* Achievements CTA */}
+        <Link href="/achievements">
+          <div className="fifa-card mb-6 overflow-hidden group cursor-pointer hover:border-primary/50 transition-all">
+            <div className="bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-primary/10">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                      <Award className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg flex items-center gap-2">
+                        Achievements
+                        <Badge variant="outline" className="text-xs">
+                          {achievementTypes.length} Total
+                        </Badge>
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Track your badges and milestones
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </div>
+                {stats?.achievementCounts && (
+                  <div className="flex gap-4 mt-4 pt-4 border-t border-border/30">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={headToHead?.player1.avatar}
+                        alt={headToHead?.player1.name}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      <span className="text-sm font-medium">{stats.achievementCounts.player1} unlocked</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={headToHead?.player2.avatar}
+                        alt={headToHead?.player2.name}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      <span className="text-sm font-medium">{stats.achievementCounts.player2} unlocked</span>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </div>
+          </div>
+        </Link>
 
         {/* Wins Chart */}
         <div className="fifa-card mb-6">

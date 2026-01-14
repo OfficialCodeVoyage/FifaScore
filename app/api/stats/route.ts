@@ -1,14 +1,19 @@
 import { NextResponse } from 'next/server'
-import { getFullStats, getPlayers, ensureDatabase } from '@/lib/queries'
+import { getFullStats, getPlayers, getAchievements, ensureDatabase } from '@/lib/queries'
 import { getTeamById } from '@/lib/teams'
 
 export async function GET() {
   try {
     await ensureDatabase()
-    const [stats, players] = await Promise.all([
+    const [stats, players, achievements] = await Promise.all([
       getFullStats(),
-      getPlayers()
+      getPlayers(),
+      getAchievements()
     ])
+
+    // Count achievements per player
+    const player1Achievements = achievements.filter(a => a.playerId === 1).length
+    const player2Achievements = achievements.filter(a => a.playerId === 2).length
 
     // Enrich recent matches with player and team names
     const enrichedRecentMatches = stats.recentMatches.map(match => {
@@ -60,7 +65,11 @@ export async function GET() {
       player2Stats: stats.player2Stats,
       recentMatches: enrichedRecentMatches,
       totalMatches: stats.totalMatches,
-      players
+      players,
+      achievementCounts: {
+        player1: player1Achievements,
+        player2: player2Achievements
+      }
     })
   } catch (error) {
     console.error('Error fetching stats:', error)

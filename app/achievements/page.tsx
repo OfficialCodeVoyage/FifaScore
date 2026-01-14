@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Trophy, Lock, Filter } from "lucide-react"
+import { Trophy, Lock, Filter, ExternalLink } from "lucide-react"
+import Link from "next/link"
 import { achievementTypes, AchievementType, getAchievementsByCategory } from "@/lib/achievements"
 import {
   Select,
@@ -103,6 +104,13 @@ export default function AchievementsPage() {
     )
     if (!achievement) return null
     return new Date(achievement.unlockedAt).toLocaleDateString()
+  }
+
+  const getAchievementMatchId = (playerId: number, type: string) => {
+    const achievement = achievements.find(
+      (a) => a.playerId === playerId && a.type === type
+    )
+    return achievement?.matchId || null
   }
 
   // Filter achievements
@@ -285,14 +293,14 @@ export default function AchievementsPage() {
                             <div className="flex gap-1">
                               {players.map((player) => {
                                 const hasIt = hasAchievement(player.id, achievement.type)
-                                return (
+                                const matchId = getAchievementMatchId(player.id, achievement.type)
+                                const content = (
                                   <div
-                                    key={player.id}
                                     className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs ${
                                       hasIt
                                         ? "bg-primary/10 text-primary"
                                         : "bg-muted text-muted-foreground"
-                                    }`}
+                                    } ${hasIt && matchId ? "hover:bg-primary/20 cursor-pointer" : ""}`}
                                   >
                                     <img
                                       src={player.avatar}
@@ -301,8 +309,22 @@ export default function AchievementsPage() {
                                         hasIt ? "" : "grayscale opacity-50"
                                       }`}
                                     />
-                                    {hasIt ? "✓" : <Lock className="h-2.5 w-2.5" />}
+                                    {hasIt ? (
+                                      <>
+                                        <span>✓</span>
+                                        {matchId && <ExternalLink className="h-2.5 w-2.5 ml-0.5" />}
+                                      </>
+                                    ) : (
+                                      <Lock className="h-2.5 w-2.5" />
+                                    )}
                                   </div>
+                                )
+                                return hasIt && matchId ? (
+                                  <Link key={player.id} href={`/match/${matchId}`}>
+                                    {content}
+                                  </Link>
+                                ) : (
+                                  <div key={player.id}>{content}</div>
                                 )
                               })}
                             </div>
@@ -368,14 +390,14 @@ export default function AchievementsPage() {
                         <div className="flex gap-1">
                           {players.map((player) => {
                             const hasIt = hasAchievement(player.id, achievement.type)
-                            return (
+                            const matchId = getAchievementMatchId(player.id, achievement.type)
+                            const content = (
                               <div
-                                key={player.id}
                                 className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs ${
                                   hasIt
                                     ? "bg-primary/10 text-primary"
                                     : "bg-muted text-muted-foreground"
-                                }`}
+                                } ${hasIt && matchId ? "hover:bg-primary/20 cursor-pointer" : ""}`}
                               >
                                 <img
                                   src={player.avatar}
@@ -384,8 +406,22 @@ export default function AchievementsPage() {
                                     hasIt ? "" : "grayscale opacity-50"
                                   }`}
                                 />
-                                {hasIt ? "✓" : <Lock className="h-2.5 w-2.5" />}
+                                {hasIt ? (
+                                  <>
+                                    <span>✓</span>
+                                    {matchId && <ExternalLink className="h-2.5 w-2.5 ml-0.5" />}
+                                  </>
+                                ) : (
+                                  <Lock className="h-2.5 w-2.5" />
+                                )}
                               </div>
+                            )
+                            return hasIt && matchId ? (
+                              <Link key={player.id} href={`/match/${matchId}`}>
+                                {content}
+                              </Link>
+                            ) : (
+                              <div key={player.id}>{content}</div>
                             )
                           })}
                         </div>
