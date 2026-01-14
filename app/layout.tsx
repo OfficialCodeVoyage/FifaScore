@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { Navigation } from "@/components/Navigation"
+import { AchievementToastProvider } from "@/components/achievement-toast"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,14 +22,19 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen pb-20">
-            {children}
-          </main>
-          <Navigation />
+          <AchievementToastProvider>
+            <a href="#main-content" className="skip-link">
+              Skip to main content
+            </a>
+            <main id="main-content" className="min-h-screen pb-20">
+              {children}
+            </main>
+            <Navigation />
+          </AchievementToastProvider>
         </ThemeProvider>
       </body>
     </html>

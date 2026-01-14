@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAchievements, getPlayers } from '@/lib/queries'
+import { getAchievements, getPlayers, ensureDatabase } from '@/lib/queries'
 import { getAchievementInfo } from '@/lib/achievements'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDatabase()
     const { searchParams } = new URL(request.url)
     const playerIdParam = searchParams.get('playerId')
 
@@ -18,8 +21,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const achievements = getAchievements(playerId)
-    const players = getPlayers()
+    const [achievements, players] = await Promise.all([
+      getAchievements(playerId),
+      getPlayers()
+    ])
 
     // Enrich achievements with player and achievement info
     const enrichedAchievements = achievements.map(achievement => {

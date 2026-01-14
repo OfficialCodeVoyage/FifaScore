@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Star } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -14,7 +15,10 @@ import {
 export interface Team {
   id: string
   name: string
+  shortName?: string
   logo?: string
+  rating?: number
+  primaryColor?: string
 }
 
 export interface TeamSelectorProps {
@@ -39,46 +43,83 @@ const TeamSelector = ({
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger
-        className={cn("w-full", className)}
+        className={cn(
+          "w-full h-14 bg-muted/50 border-border/50 hover:bg-muted/70 transition-colors",
+          className
+        )}
         disabled={disabled}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 w-full">
           {selectedTeam ? (
             <>
-              {selectedTeam.logo ? (
-                <img
-                  src={selectedTeam.logo}
-                  alt={selectedTeam.name}
-                  className="h-6 w-6 rounded-full object-cover"
-                />
-              ) : (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
-                  {selectedTeam.name.slice(0, 2).toUpperCase()}
-                </div>
-              )}
-              <span className="truncate">{selectedTeam.name}</span>
+              <div
+                className="team-logo-sm flex items-center justify-center flex-shrink-0"
+                style={{
+                  boxShadow: selectedTeam.primaryColor
+                    ? `0 0 0 2px ${selectedTeam.primaryColor}30`
+                    : undefined
+                }}
+              >
+                {selectedTeam.logo ? (
+                  <img
+                    src={selectedTeam.logo}
+                    alt={selectedTeam.name}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <span className="text-xs font-bold text-gray-800">
+                    {selectedTeam.shortName || selectedTeam.name.slice(0, 3).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col items-start flex-1 min-w-0">
+                <span className="truncate font-medium text-sm">{selectedTeam.name}</span>
+                {selectedTeam.rating && (
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+                    <span className="text-xs text-muted-foreground">{selectedTeam.rating}</span>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <SelectValue placeholder={placeholder} />
           )}
         </div>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="max-h-[300px]">
         {teams.map((team) => (
-          <SelectItem key={team.id} value={team.id}>
-            <div className="flex items-center gap-2">
-              {team.logo ? (
-                <img
-                  src={team.logo}
-                  alt={team.name}
-                  className="h-6 w-6 rounded-full object-cover"
-                />
-              ) : (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
-                  {team.name.slice(0, 2).toUpperCase()}
-                </div>
-              )}
-              <span>{team.name}</span>
+          <SelectItem key={team.id} value={team.id} className="py-2">
+            <div className="flex items-center gap-3">
+              <div
+                className="team-logo-sm flex items-center justify-center flex-shrink-0"
+                style={{
+                  boxShadow: team.primaryColor
+                    ? `0 0 0 2px ${team.primaryColor}30`
+                    : undefined
+                }}
+              >
+                {team.logo ? (
+                  <img
+                    src={team.logo}
+                    alt={team.name}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <span className="text-xs font-bold text-gray-800">
+                    {team.shortName || team.name.slice(0, 3).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium">{team.name}</span>
+                {team.rating && (
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+                    <span className="text-xs text-muted-foreground">{team.rating}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </SelectItem>
         ))}

@@ -4,8 +4,6 @@ import * as React from "react"
 import { Minus, Plus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 
 export interface ScoreInputProps {
   value?: number
@@ -38,52 +36,37 @@ const ScoreInput = ({
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(e.target.value, 10)
-    if (!isNaN(newValue) && newValue >= min && newValue <= max) {
-      onChange?.(newValue)
-    } else if (e.target.value === "") {
-      onChange?.(min)
-    }
-  }
-
   return (
-    <div className={cn("flex flex-col items-center gap-2", className)}>
+    <div className={cn("flex flex-col items-center gap-3", className)}>
       {label && (
         <label className="text-sm font-medium text-muted-foreground">
           {label}
         </label>
       )}
-      <div className="flex items-center gap-2">
-        <Button
+      <div className="flex items-center gap-6">
+        <button
           type="button"
-          variant="outline"
-          size="icon"
           onClick={handleDecrement}
           disabled={disabled || value <= min}
-          className="h-12 w-12 rounded-full"
+          className="score-stepper-btn"
+          aria-label="Decrease score"
         >
-          <Minus className="h-5 w-5" />
-        </Button>
-        <Input
-          type="number"
-          value={value}
-          onChange={handleInputChange}
-          min={min}
-          max={max}
-          disabled={disabled}
-          className="h-16 w-20 text-center text-3xl font-bold tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-        />
-        <Button
+          <Minus className="h-6 w-6" />
+        </button>
+
+        <div className="w-24 text-center">
+          <span className="text-score score-display">{value}</span>
+        </div>
+
+        <button
           type="button"
-          variant="outline"
-          size="icon"
           onClick={handleIncrement}
           disabled={disabled || value >= max}
-          className="h-12 w-12 rounded-full"
+          className="score-stepper-btn"
+          aria-label="Increase score"
         >
-          <Plus className="h-5 w-5" />
-        </Button>
+          <Plus className="h-6 w-6" />
+        </button>
       </div>
     </div>
   )

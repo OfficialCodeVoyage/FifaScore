@@ -1,18 +1,38 @@
-import { readDatabase, writeDatabase } from './db'
+import {
+  readDatabase,
+  getPlayers as dbGetPlayers,
+  getPlayer as dbGetPlayer,
+  getMatches as dbGetMatches,
+  getMatch as dbGetMatch,
+  addMatch as dbAddMatch,
+  getComments as dbGetComments,
+  addComment as dbAddComment,
+  getAchievements as dbGetAchievements,
+  addAchievement,
+  initializeDatabase,
+  AddMatchData
+} from './db'
 import { Player, Match, Comment, Achievement } from './data'
 import { teams, getTeamById } from './teams'
 import { checkAchievements } from './achievements'
 
-// ============ Players ============
+// Re-export AddMatchData for API routes
+export type { AddMatchData } from './db'
 
-export function getPlayers(): Player[] {
-  const db = readDatabase()
-  return db.players
+// ============ Database Initialization ============
+
+export async function ensureDatabase(): Promise<void> {
+  await initializeDatabase()
 }
 
-export function getPlayer(id: number): Player | undefined {
-  const db = readDatabase()
-  return db.players.find(p => p.id === id)
+// ============ Players ============
+
+export async function getPlayers(): Promise<Player[]> {
+  return dbGetPlayers()
+}
+
+export async function getPlayer(id: number): Promise<Player | undefined> {
+  return dbGetPlayer(id)
 }
 
 // ============ Teams ============
@@ -23,49 +43,16 @@ export function getTeams() {
 
 // ============ Matches ============
 
-export function getMatches(): Match[] {
-  const db = readDatabase()
-  return db.matches.sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
+export async function getMatches(): Promise<Match[]> {
+  return dbGetMatches()
 }
 
-export function getMatch(id: number): Match | undefined {
-  const db = readDatabase()
-  return db.matches.find(m => m.id === id)
+export async function getMatch(id: number): Promise<Match | undefined> {
+  return dbGetMatch(id)
 }
 
-export interface AddMatchData {
-  player1Id: number
-  player2Id: number
-  player1Score: number
-  player2Score: number
-  player1TeamId: number
-  player2TeamId: number
-  extraTime?: boolean
-  penalties?: boolean
-}
-
-export function addMatch(data: AddMatchData): Match {
-  const db = readDatabase()
-
-  const newMatch: Match = {
-    id: db.matches.length > 0 ? Math.max(...db.matches.map(m => m.id)) + 1 : 1,
-    date: new Date().toISOString(),
-    player1Id: data.player1Id,
-    player2Id: data.player2Id,
-    player1Score: data.player1Score,
-    player2Score: data.player2Score,
-    player1TeamId: data.player1TeamId,
-    player2TeamId: data.player2TeamId,
-    extraTime: data.extraTime || false,
-    penalties: data.penalties || false
-  }
-
-  db.matches.push(newMatch)
-  writeDatabase(db)
-
-  return newMatch
+export async function addMatch(data: AddMatchData): Promise<Match> {
+  return dbAddMatch(data)
 }
 
 // ============ Player Stats ============
@@ -90,8 +77,8 @@ export interface PlayerStats {
   mostUsedTeams: { teamId: number, teamName: string, timesUsed: number }[]
 }
 
-export function getPlayerStats(playerId: number): PlayerStats | null {
-  const db = readDatabase()
+export async function getPlayerStats(playerId: number): Promise<PlayerStats | null> {
+  const db = await readDatabase()
   const player = db.players.find(p => p.id === playerId)
 
   if (!player) return null
@@ -232,8 +219,8 @@ export interface HeadToHead {
   recentMatches: Match[]
 }
 
-export function getHeadToHead(): HeadToHead | null {
-  const db = readDatabase()
+export async function getHeadToHead(): Promise<HeadToHead | null> {
+  const db = await readDatabase()
 
   if (db.players.length < 2) return null
 
@@ -278,18 +265,12 @@ export function getHeadToHead(): HeadToHead | null {
 
 // ============ Achievements ============
 
-export function getAchievements(playerId?: number): Achievement[] {
-  const db = readDatabase()
-
-  if (playerId !== undefined) {
-    return db.achievements.filter(a => a.playerId === playerId)
-  }
-
-  return db.achievements
+export async function getAchievements(playerId?: number): Promise<Achievement[]> {
+  return dbGetAchievements(playerId)
 }
 
-export function checkAndUnlockAchievements(playerId: number, matchId: number): Achievement[] {
-  const db = readDatabase()
+export async function checkAndUnlockAchievements(playerId: number, matchId: number): Promise<Achievement[]> {
+  const db = await readDatabase()
 
   const newAchievementTypes = checkAchievements(
     playerId,
@@ -301,20 +282,8 @@ export function checkAndUnlockAchievements(playerId: number, matchId: number): A
   const newAchievements: Achievement[] = []
 
   for (const type of newAchievementTypes) {
-    const achievement: Achievement = {
-      id: db.achievements.length > 0 ? Math.max(...db.achievements.map(a => a.id)) + 1 : 1,
-      playerId,
-      type,
-      unlockedAt: new Date().toISOString(),
-      matchId
-    }
-
-    db.achievements.push(achievement)
+    const achievement = await addAchievement(playerId, type, matchId)
     newAchievements.push(achievement)
-  }
-
-  if (newAchievements.length > 0) {
-    writeDatabase(db)
   }
 
   return newAchievements
@@ -322,28 +291,12 @@ export function checkAndUnlockAchievements(playerId: number, matchId: number): A
 
 // ============ Comments ============
 
-export function getComments(matchId: number): Comment[] {
-  const db = readDatabase()
-  return db.comments
-    .filter(c => c.matchId === matchId)
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+export async function getComments(matchId: number): Promise<Comment[]> {
+  return dbGetComments(matchId)
 }
 
-export function addComment(matchId: number, playerId: number, content: string): Comment {
-  const db = readDatabase()
-
-  const newComment: Comment = {
-    id: db.comments.length > 0 ? Math.max(...db.comments.map(c => c.id)) + 1 : 1,
-    matchId,
-    playerId,
-    content,
-    createdAt: new Date().toISOString()
-  }
-
-  db.comments.push(newComment)
-  writeDatabase(db)
-
-  return newComment
+export async function addComment(matchId: number, playerId: number, content: string): Promise<Comment> {
+  return dbAddComment(matchId, playerId, content)
 }
 
 // ============ Full Stats Object ============
@@ -356,16 +309,23 @@ export interface FullStats {
   totalMatches: number
 }
 
-export function getFullStats(): FullStats {
-  const db = readDatabase()
+export async function getFullStats(): Promise<FullStats> {
+  const db = await readDatabase()
   const player1 = db.players[0]
   const player2 = db.players[1]
 
+  const [headToHead, player1Stats, player2Stats, recentMatches] = await Promise.all([
+    getHeadToHead(),
+    player1 ? getPlayerStats(player1.id) : null,
+    player2 ? getPlayerStats(player2.id) : null,
+    getMatches()
+  ])
+
   return {
-    headToHead: getHeadToHead(),
-    player1Stats: player1 ? getPlayerStats(player1.id) : null,
-    player2Stats: player2 ? getPlayerStats(player2.id) : null,
-    recentMatches: getMatches().slice(0, 10),
+    headToHead,
+    player1Stats,
+    player2Stats,
+    recentMatches: recentMatches.slice(0, 10),
     totalMatches: db.matches.length
   }
 }

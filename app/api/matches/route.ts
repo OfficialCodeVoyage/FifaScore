@@ -3,12 +3,14 @@ import {
   getMatches,
   addMatch,
   checkAndUnlockAchievements,
+  ensureDatabase,
   AddMatchData
 } from '@/lib/queries'
 
 export async function GET() {
   try {
-    const matches = getMatches()
+    await ensureDatabase()
+    const matches = await getMatches()
     return NextResponse.json({ matches })
   } catch (error) {
     console.error('Error fetching matches:', error)
@@ -21,6 +23,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDatabase()
     const body = await request.json()
 
     // Validate required fields
@@ -62,17 +65,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Add the match
-    const newMatch = addMatch(matchData)
+    const newMatch = await addMatch(matchData)
 
     // Check and unlock achievements for both players
-    const player1Achievements = checkAndUnlockAchievements(
-      matchData.player1Id,
-      newMatch.id
-    )
-    const player2Achievements = checkAndUnlockAchievements(
-      matchData.player2Id,
-      newMatch.id
-    )
+    const [player1Achievements, player2Achievements] = await Promise.all([
+      checkAndUnlockAchievements(matchData.player1Id, newMatch.id),
+      checkAndUnlockAchievements(matchData.player2Id, newMatch.id)
+    ])
 
     return NextResponse.json({
       match: newMatch,

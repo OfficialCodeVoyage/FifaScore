@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { addComment, getComments, getPlayers, getMatch } from '@/lib/queries'
+import { addComment, getComments, getPlayers, getMatch, ensureDatabase } from '@/lib/queries'
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDatabase()
     const body = await request.json()
 
     // Validate required fields
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate match exists
-    const match = getMatch(body.matchId)
+    const match = await getMatch(body.matchId)
     if (!match) {
       return NextResponse.json(
         { error: 'Match not found' },
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate player exists
-    const players = getPlayers()
+    const players = await getPlayers()
     const player = players.find(p => p.id === body.playerId)
     if (!player) {
       return NextResponse.json(
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Add the comment
-    const newComment = addComment(
+    const newComment = await addComment(
       body.matchId,
       body.playerId,
       body.content.trim()
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDatabase()
     const { searchParams } = new URL(request.url)
     const matchIdParam = searchParams.get('matchId')
 
@@ -89,8 +91,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const comments = getComments(matchId)
-    const players = getPlayers()
+    const [comments, players] = await Promise.all([
+      getComments(matchId),
+      getPlayers()
+    ])
 
     // Enrich comments with player info
     const enrichedComments = comments.map(comment => {

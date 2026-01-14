@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
-import { getFullStats, getPlayers } from '@/lib/queries'
+import { getFullStats, getPlayers, ensureDatabase } from '@/lib/queries'
 import { getTeamById } from '@/lib/teams'
 
 export async function GET() {
   try {
-    const stats = getFullStats()
-    const players = getPlayers()
+    await ensureDatabase()
+    const [stats, players] = await Promise.all([
+      getFullStats(),
+      getPlayers()
+    ])
 
     // Enrich recent matches with player and team names
     const enrichedRecentMatches = stats.recentMatches.map(match => {

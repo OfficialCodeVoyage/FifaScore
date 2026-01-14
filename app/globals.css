@@ -4,7 +4,40 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* FIFA-inspired dark blue theme */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142 71% 45%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 18%;
+    --muted-foreground: 215 20.2% 55%;
+    --accent: 45 93% 47%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 22%;
+    --input: 217.2 32.6% 22%;
+    --ring: 142 71% 45%;
+    --radius: 0.75rem;
+
+    /* FIFA custom colors */
+    --fifa-gold: 45 93% 47%;
+    --fifa-blue: 217 91% 60%;
+    --fifa-green: 142 71% 45%;
+    --fifa-pitch: 140 35% 25%;
+    --fifa-pitch-light: 140 30% 35%;
+    --gradient-start: 222 47% 11%;
+    --gradient-end: 217 91% 20%;
+  }
+
+  .light {
+    --background: 0 0% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -16,36 +49,22 @@
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
+    --accent: 45 93% 47%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 142 76% 36%;
-    --radius: 0.75rem;
-  }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 142 76% 46%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 142 76% 46%;
+    /* FIFA custom colors light */
+    --fifa-gold: 45 93% 47%;
+    --fifa-blue: 217 91% 50%;
+    --fifa-green: 142 71% 40%;
+    --fifa-pitch: 140 40% 45%;
+    --fifa-pitch-light: 140 35% 60%;
+    --gradient-start: 210 40% 96%;
+    --gradient-end: 217 50% 85%;
   }
 }
 
@@ -55,5 +74,341 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+@layer utilities {
+  /* ===== ACCESSIBILITY & FOCUS STATES ===== */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary ring-0;
+  }
+
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* ===== BUTTON PRESS FEEDBACK ===== */
+  .btn-press {
+    @apply transition-all duration-100;
+  }
+
+  .btn-press:active {
+    transform: scale(0.95);
+  }
+
+  /* Global button press effect */
+  button:not(:disabled):active,
+  [role="button"]:not(:disabled):active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+
+  /* ===== SUCCESS ANIMATION ===== */
+  @keyframes success-pulse {
+    0% { box-shadow: 0 0 0 0 hsla(142, 71%, 45%, 0.7); }
+    70% { box-shadow: 0 0 0 15px hsla(142, 71%, 45%, 0); }
+    100% { box-shadow: 0 0 0 0 hsla(142, 71%, 45%, 0); }
+  }
+
+  .animate-success {
+    animation: success-pulse 0.6s ease-out;
+  }
+
+  /* ===== TEXT OVERLAY FOR GRADIENTS ===== */
+  .text-overlay-dark {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  /* ===== MOBILE SAFE AREA ===== */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .mb-safe {
+    margin-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ===== SCORE INPUT STEPPER ===== */
+  .score-stepper-btn {
+    @apply h-14 w-14 rounded-full flex items-center justify-center text-xl font-bold transition-all duration-150;
+    @apply bg-muted/50 border border-border/50 text-foreground;
+    @apply hover:bg-muted hover:border-primary/30;
+    @apply disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .score-stepper-btn:active:not(:disabled) {
+    transform: scale(0.9);
+  }
+
+  /* ===== TOAST ANIMATIONS ===== */
+  @keyframes slide-in-from-top {
+    from {
+      transform: translate(-50%, -100%);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-to-top {
+    from {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+    to {
+      transform: translate(-50%, -100%);
+      opacity: 0;
+    }
+  }
+
+  .toast-enter {
+    animation: slide-in-from-top 0.3s ease-out forwards;
+  }
+
+  .toast-exit {
+    animation: slide-out-to-top 0.2s ease-in forwards;
+  }
+
+  /* ===== TYPOGRAPHY SCALE ===== */
+  .text-score {
+    font-size: 3rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .text-score-sm {
+    font-size: 1.875rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== FIFA-style gradients ===== */
+  .fifa-gradient {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+  }
+
+  .fifa-gradient-gold {
+    background: linear-gradient(135deg, hsl(45, 93%, 47%) 0%, hsl(35, 90%, 40%) 100%);
+  }
+
+  .fifa-gradient-green {
+    background: linear-gradient(135deg, hsl(142, 71%, 45%) 0%, hsl(150, 60%, 35%) 100%);
+  }
+
+  .fifa-gradient-blue {
+    background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(230, 80%, 45%) 100%);
+  }
+
+  .fifa-gradient-pitch {
+    background: linear-gradient(180deg, hsl(140, 35%, 25%) 0%, hsl(140, 30%, 18%) 100%);
+  }
+
+  /* Pitch pattern overlay */
+  .pitch-pattern {
+    background-image:
+      linear-gradient(180deg, transparent 0%, transparent 48%, rgba(255,255,255,0.03) 48%, rgba(255,255,255,0.03) 52%, transparent 52%),
+      linear-gradient(90deg, transparent 0%, transparent 48%, rgba(255,255,255,0.02) 48%, rgba(255,255,255,0.02) 52%, transparent 52%);
+    background-size: 100% 40px, 40px 100%;
+  }
+
+  /* Team logo styling */
+  .team-logo {
+    @apply rounded-lg bg-white p-1 shadow-md;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+
+  .team-logo-sm {
+    @apply w-8 h-8 rounded bg-white p-0.5;
+  }
+
+  .team-logo-md {
+    @apply w-12 h-12 rounded-lg bg-white p-1;
+  }
+
+  .team-logo-lg {
+    @apply w-16 h-16 rounded-lg bg-white p-1.5;
+  }
+
+  /* Score display */
+  .score-display {
+    @apply font-bold tabular-nums tracking-tight;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  /* Winner glow effect */
+  .winner-glow {
+    text-shadow: 0 0 20px hsl(var(--primary)), 0 0 40px hsl(var(--primary));
+  }
+
+  /* Card hover effect */
+  .fifa-card {
+    @apply bg-card rounded-xl border border-border/50 shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(222, 47%, 12%) 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    will-change: transform, box-shadow;
+  }
+
+  .fifa-card:hover {
+    @apply border-primary/30;
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 25px -5px rgba(0, 0, 0, 0.3),
+      0 8px 10px -6px rgba(0, 0, 0, 0.2),
+      0 0 0 1px hsla(var(--primary), 0.1);
+  }
+
+  .fifa-card:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease;
+  }
+
+  /* Rating badge */
+  .rating-badge {
+    @apply inline-flex items-center justify-center font-bold text-sm rounded px-2 py-0.5;
+    background: linear-gradient(135deg, hsl(45, 93%, 47%) 0%, hsl(35, 90%, 40%) 100%);
+    color: hsl(222, 47%, 11%);
+  }
+
+  /* VS badge */
+  .vs-badge {
+    @apply px-4 py-2 rounded-full font-bold text-lg;
+    background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(217, 32%, 15%) 100%);
+    border: 2px solid hsl(var(--border));
+  }
+
+  /* Streak fire effect */
+  .streak-fire {
+    @apply relative;
+    animation: flicker 1.5s infinite alternate;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  /* Match result indicator */
+  .match-win {
+    @apply bg-primary/20 border-l-4 border-primary;
+  }
+
+  .match-loss {
+    @apply bg-destructive/20 border-l-4 border-destructive;
+  }
+
+  .match-draw {
+    @apply bg-accent/20 border-l-4 border-accent;
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-card/80 backdrop-blur-md;
+  }
+
+  /* Achievement unlocked animation */
+  .achievement-unlocked {
+    animation: unlock 0.5s ease-out;
+  }
+
+  @keyframes unlock {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Pulse animation for live/active elements */
+  .pulse-green {
+    animation: pulse-green 2s infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsla(142, 71%, 45%, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 10px hsla(142, 71%, 45%, 0);
+    }
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Better placeholder styling */
+input::placeholder,
+textarea::placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+}
+
+/* Skip navigation for accessibility */
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50;
+  @apply focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
+}
+
+/* Loading skeleton shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted) / 0.3) 25%,
+    hsl(var(--muted) / 0.5) 50%,
+    hsl(var(--muted) / 0.3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Line clamp for text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

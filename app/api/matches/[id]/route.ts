@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getMatch, getComments, getPlayers } from '@/lib/queries'
+import { getMatch, getComments, getPlayers, ensureDatabase } from '@/lib/queries'
 import { getTeamById } from '@/lib/teams'
 
 interface RouteParams {
@@ -11,6 +11,7 @@ export async function GET(
   { params }: RouteParams
 ) {
   try {
+    await ensureDatabase()
     const { id } = await params
     const matchId = parseInt(id)
 
@@ -21,7 +22,7 @@ export async function GET(
       )
     }
 
-    const match = getMatch(matchId)
+    const match = await getMatch(matchId)
 
     if (!match) {
       return NextResponse.json(
@@ -31,8 +32,10 @@ export async function GET(
     }
 
     // Get related data
-    const comments = getComments(matchId)
-    const players = getPlayers()
+    const [comments, players] = await Promise.all([
+      getComments(matchId),
+      getPlayers()
+    ])
 
     const player1 = players.find(p => p.id === match.player1Id)
     const player2 = players.find(p => p.id === match.player2Id)

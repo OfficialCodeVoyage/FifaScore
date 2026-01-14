@@ -343,7 +343,7 @@ export default function MatchDetailPage() {
                   <SelectItem value="1">
                     <div className="flex items-center gap-2">
                       <img
-                        src="https://api.dicebear.com/7.x/avataaars/svg?seed=Pavlo"
+                        src="/pavlo.png"
                         alt="Pavlo"
                         className="w-4 h-4 rounded-full"
                       />
@@ -353,11 +353,11 @@ export default function MatchDetailPage() {
                   <SelectItem value="2">
                     <div className="flex items-center gap-2">
                       <img
-                        src="https://api.dicebear.com/7.x/avataaars/svg?seed=Summet"
-                        alt="Summet"
+                        src="/sumeet.png"
+                        alt="Sumeet"
                         className="w-4 h-4 rounded-full"
                       />
-                      Summet
+                      Sumeet
                     </div>
                   </SelectItem>
                 </SelectContent>

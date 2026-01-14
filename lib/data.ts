@@ -7,9 +7,12 @@ export interface Player {
 export interface Team {
   id: number
   name: string
+  shortName: string
   logo: string
   league: string
   rating: number
+  primaryColor: string
+  secondaryColor: string
 }
 
 export interface Match {
@@ -53,12 +56,12 @@ export const defaultDatabase: Database = {
     {
       id: 1,
       name: "Pavlo",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Pavlo"
+      avatar: "/pavlo.png"
     },
     {
       id: 2,
-      name: "Summet",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Summet"
+      name: "Sumeet",
+      avatar: "/sumeet.png"
     }
   ],
   matches: [],
