@@ -10,6 +10,13 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "FifaScore - Track Your FIFA Matches",
   description: "Track head-to-head FIFA matches between Pavlo and Summet",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/favicon.svg",
+  },
+  manifest: "/manifest.json",
 }
 
 export default function RootLayout({
