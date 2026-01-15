@@ -202,6 +202,77 @@ export async function deleteMatch(id: number): Promise<boolean> {
   }
 }
 
+export interface UpdateMatchData {
+  player1Score?: number
+  player2Score?: number
+  player1TeamId?: number
+  player2TeamId?: number
+  extraTime?: boolean
+  penalties?: boolean
+}
+
+export async function updateMatch(id: number, data: UpdateMatchData): Promise<Match | null> {
+  try {
+    // Build update query dynamically based on provided fields
+    const updates: string[] = []
+    const values: (number | boolean)[] = []
+
+    if (data.player1Score !== undefined) {
+      updates.push(`player1_score = ${data.player1Score}`)
+    }
+    if (data.player2Score !== undefined) {
+      updates.push(`player2_score = ${data.player2Score}`)
+    }
+    if (data.player1TeamId !== undefined) {
+      updates.push(`player1_team_id = ${data.player1TeamId}`)
+    }
+    if (data.player2TeamId !== undefined) {
+      updates.push(`player2_team_id = ${data.player2TeamId}`)
+    }
+    if (data.extraTime !== undefined) {
+      updates.push(`extra_time = ${data.extraTime}`)
+    }
+    if (data.penalties !== undefined) {
+      updates.push(`penalties = ${data.penalties}`)
+    }
+
+    if (updates.length === 0) {
+      return await getMatch(id) || null
+    }
+
+    const { rows } = await sql`
+      UPDATE matches
+      SET player1_score = COALESCE(${data.player1Score ?? null}, player1_score),
+          player2_score = COALESCE(${data.player2Score ?? null}, player2_score),
+          player1_team_id = COALESCE(${data.player1TeamId ?? null}, player1_team_id),
+          player2_team_id = COALESCE(${data.player2TeamId ?? null}, player2_team_id),
+          extra_time = COALESCE(${data.extraTime ?? null}, extra_time),
+          penalties = COALESCE(${data.penalties ?? null}, penalties)
+      WHERE id = ${id}
+      RETURNING *
+    `
+
+    if (rows.length === 0) return null
+
+    const row = rows[0]
+    return {
+      id: row.id,
+      date: row.date instanceof Date ? row.date.toISOString() : row.date,
+      player1Id: row.player1_id,
+      player2Id: row.player2_id,
+      player1Score: row.player1_score,
+      player2Score: row.player2_score,
+      player1TeamId: row.player1_team_id,
+      player2TeamId: row.player2_team_id,
+      extraTime: row.extra_time,
+      penalties: row.penalties
+    }
+  } catch (error) {
+    console.error('Error updating match:', error)
+    return null
+  }
+}
+
 // ============ Comments ============
 
 export async function getComments(matchId: number): Promise<Comment[]> {

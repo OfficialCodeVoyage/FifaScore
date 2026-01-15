@@ -269,6 +269,11 @@ export async function getAchievements(playerId?: number): Promise<Achievement[]>
   return dbGetAchievements(playerId)
 }
 
+export async function getMatchAchievements(matchId: number): Promise<Achievement[]> {
+  const allAchievements = await dbGetAchievements()
+  return allAchievements.filter(a => a.matchId === matchId)
+}
+
 export async function checkAndUnlockAchievements(playerId: number, matchId: number): Promise<Achievement[]> {
   const db = await readDatabase()
 

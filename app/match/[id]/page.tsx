@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Clock, MessageCircle, Send, Trash2 } from "lucide-react"
+import { ArrowLeft, Clock, MessageCircle, Send, Trash2, Pencil, X, Check, Trophy } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { ScoreInput } from "@/components/score-input"
 import {
   Select,
   SelectContent,
@@ -47,11 +50,34 @@ interface Comment {
   playerAvatar: string
 }
 
+interface MatchAchievement {
+  id: number
+  playerId: number
+  type: string
+  unlockedAt: string
+  matchId: number
+  playerName: string
+  playerAvatar: string
+  name: string
+  description: string
+  icon: string
+  rarity: string
+}
+
+const rarityColors: Record<string, string> = {
+  common: 'bg-slate-500',
+  uncommon: 'bg-green-500',
+  rare: 'bg-blue-500',
+  epic: 'bg-purple-500',
+  legendary: 'bg-amber-500'
+}
+
 export default function MatchDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [match, setMatch] = useState<MatchData | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
+  const [achievements, setAchievements] = useState<MatchAchievement[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -64,6 +90,14 @@ export default function MatchDetailPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
+  // Edit state
+  const [isEditing, setIsEditing] = useState(false)
+  const [editPlayer1Score, setEditPlayer1Score] = useState(0)
+  const [editPlayer2Score, setEditPlayer2Score] = useState(0)
+  const [editExtraTime, setEditExtraTime] = useState(false)
+  const [editPenalties, setEditPenalties] = useState(false)
+  const [saving, setSaving] = useState(false)
+
   useEffect(() => {
     async function fetchMatch() {
       try {
@@ -74,6 +108,7 @@ export default function MatchDetailPage() {
         const data = await response.json()
         setMatch(data.match)
         setComments(data.comments || [])
+        setAchievements(data.achievements || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load match")
       } finally {
@@ -85,6 +120,58 @@ export default function MatchDetailPage() {
       fetchMatch()
     }
   }, [params.id])
+
+  const startEditing = () => {
+    if (match) {
+      setEditPlayer1Score(match.player1Score)
+      setEditPlayer2Score(match.player2Score)
+      setEditExtraTime(match.extraTime)
+      setEditPenalties(match.penalties)
+      setIsEditing(true)
+    }
+  }
+
+  const cancelEditing = () => {
+    setIsEditing(false)
+  }
+
+  const saveEditing = async () => {
+    if (!match) return
+
+    setSaving(true)
+    try {
+      const response = await fetch(`/api/matches/${params.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          player1Score: editPlayer1Score,
+          player2Score: editPlayer2Score,
+          extraTime: editExtraTime,
+          penalties: editPenalties,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update match")
+      }
+
+      // Update local state
+      setMatch({
+        ...match,
+        player1Score: editPlayer1Score,
+        player2Score: editPlayer2Score,
+        extraTime: editExtraTime,
+        penalties: editPenalties,
+      })
+      setIsEditing(false)
+    } catch (err) {
+      console.error("Error updating match:", err)
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -216,14 +303,26 @@ export default function MatchDetailPage() {
             </p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-          onClick={() => setShowDeleteConfirm(true)}
-        >
-          <Trash2 className="h-5 w-5" />
-        </Button>
+        <div className="flex gap-2">
+          {!isEditing && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-foreground"
+              onClick={startEditing}
+            >
+              <Pencil className="h-5 w-5" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            <Trash2 className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Delete Confirmation */}
@@ -257,97 +356,243 @@ export default function MatchDetailPage() {
       {/* Match Result Card */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            {/* Player 1 / Team 1 */}
-            <div className="flex flex-col items-center flex-1">
-              <img
-                src={match.team1Logo}
-                alt={match.team1Name}
-                className="w-16 h-16 rounded-lg mb-2"
-              />
-              <span className="font-semibold text-sm text-center">
-                {match.team1Name}
-              </span>
-              <div className="flex items-center gap-1 mt-1">
-                <img
-                  src={match.player1Avatar}
-                  alt={match.player1Name}
-                  className="w-5 h-5 rounded-full"
-                />
-                <span className="text-xs text-muted-foreground">
-                  {match.player1Name}
-                </span>
+          {isEditing ? (
+            // Edit Mode
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                {/* Player 1 */}
+                <div className="flex flex-col items-center flex-1">
+                  <img
+                    src={match.team1Logo}
+                    alt={match.team1Name}
+                    className="w-16 h-16 rounded-lg mb-2"
+                  />
+                  <span className="font-semibold text-sm text-center">
+                    {match.team1Name}
+                  </span>
+                  <div className="flex items-center gap-1 mt-1 mb-3">
+                    <img
+                      src={match.player1Avatar}
+                      alt={match.player1Name}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {match.player1Name}
+                    </span>
+                  </div>
+                  <ScoreInput
+                    value={editPlayer1Score}
+                    onChange={setEditPlayer1Score}
+                    min={0}
+                    max={99}
+                  />
+                </div>
+
+                <div className="px-4">
+                  <span className="text-xl font-bold text-muted-foreground">-</span>
+                </div>
+
+                {/* Player 2 */}
+                <div className="flex flex-col items-center flex-1">
+                  <img
+                    src={match.team2Logo}
+                    alt={match.team2Name}
+                    className="w-16 h-16 rounded-lg mb-2"
+                  />
+                  <span className="font-semibold text-sm text-center">
+                    {match.team2Name}
+                  </span>
+                  <div className="flex items-center gap-1 mt-1 mb-3">
+                    <img
+                      src={match.player2Avatar}
+                      alt={match.player2Name}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {match.player2Name}
+                    </span>
+                  </div>
+                  <ScoreInput
+                    value={editPlayer2Score}
+                    onChange={setEditPlayer2Score}
+                    min={0}
+                    max={99}
+                  />
+                </div>
               </div>
-              <span
-                className={`text-4xl font-bold mt-3 ${
-                  player1Won ? "text-primary" : ""
-                }`}
-              >
-                {match.player1Score}
-              </span>
-            </div>
 
-            {/* VS / Result */}
-            <div className="flex flex-col items-center px-4">
-              <span className="text-xl font-bold text-muted-foreground mb-2">
-                -
-              </span>
-              {player1Won && (
-                <Badge variant="success" className="text-xs">
-                  {match.player1Name} wins!
-                </Badge>
-              )}
-              {player2Won && (
-                <Badge variant="success" className="text-xs">
-                  {match.player2Name} wins!
-                </Badge>
-              )}
-              {isDraw && (
-                <Badge variant="secondary" className="text-xs">
-                  Draw
-                </Badge>
-              )}
-            </div>
-
-            {/* Player 2 / Team 2 */}
-            <div className="flex flex-col items-center flex-1">
-              <img
-                src={match.team2Logo}
-                alt={match.team2Name}
-                className="w-16 h-16 rounded-lg mb-2"
-              />
-              <span className="font-semibold text-sm text-center">
-                {match.team2Name}
-              </span>
-              <div className="flex items-center gap-1 mt-1">
-                <img
-                  src={match.player2Avatar}
-                  alt={match.player2Name}
-                  className="w-5 h-5 rounded-full"
-                />
-                <span className="text-xs text-muted-foreground">
-                  {match.player2Name}
-                </span>
+              {/* Match Options */}
+              <div className="space-y-3 pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Extra Time (AET)</Label>
+                  <Switch checked={editExtraTime} onCheckedChange={setEditExtraTime} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Penalties (PEN)</Label>
+                  <Switch checked={editPenalties} onCheckedChange={setEditPenalties} />
+                </div>
               </div>
-              <span
-                className={`text-4xl font-bold mt-3 ${
-                  player2Won ? "text-primary" : ""
-                }`}
-              >
-                {match.player2Score}
-              </span>
-            </div>
-          </div>
 
-          {/* Match Tags */}
-          {(match.extraTime || match.penalties) && (
-            <div className="flex justify-center gap-2 mt-4 pt-4 border-t">
-              {match.extraTime && <Badge variant="outline">After Extra Time</Badge>}
-              {match.penalties && <Badge variant="outline">Penalties</Badge>}
+              {/* Edit Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button
+                  onClick={saveEditing}
+                  disabled={saving}
+                  className="flex-1 gap-2"
+                >
+                  <Check className="h-4 w-4" />
+                  {saving ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={cancelEditing}
+                  disabled={saving}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
+          ) : (
+            // View Mode
+            <>
+              <div className="flex items-center justify-between">
+                {/* Player 1 / Team 1 */}
+                <div className="flex flex-col items-center flex-1">
+                  <img
+                    src={match.team1Logo}
+                    alt={match.team1Name}
+                    className="w-16 h-16 rounded-lg mb-2"
+                  />
+                  <span className="font-semibold text-sm text-center">
+                    {match.team1Name}
+                  </span>
+                  <div className="flex items-center gap-1 mt-1">
+                    <img
+                      src={match.player1Avatar}
+                      alt={match.player1Name}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {match.player1Name}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-4xl font-bold mt-3 ${
+                      player1Won ? "text-primary" : ""
+                    }`}
+                  >
+                    {match.player1Score}
+                  </span>
+                </div>
+
+                {/* VS / Result */}
+                <div className="flex flex-col items-center px-4">
+                  <span className="text-xl font-bold text-muted-foreground mb-2">
+                    -
+                  </span>
+                  {player1Won && (
+                    <Badge variant="success" className="text-xs">
+                      {match.player1Name} wins!
+                    </Badge>
+                  )}
+                  {player2Won && (
+                    <Badge variant="success" className="text-xs">
+                      {match.player2Name} wins!
+                    </Badge>
+                  )}
+                  {isDraw && (
+                    <Badge variant="secondary" className="text-xs">
+                      Draw
+                    </Badge>
+                  )}
+                </div>
+
+                {/* Player 2 / Team 2 */}
+                <div className="flex flex-col items-center flex-1">
+                  <img
+                    src={match.team2Logo}
+                    alt={match.team2Name}
+                    className="w-16 h-16 rounded-lg mb-2"
+                  />
+                  <span className="font-semibold text-sm text-center">
+                    {match.team2Name}
+                  </span>
+                  <div className="flex items-center gap-1 mt-1">
+                    <img
+                      src={match.player2Avatar}
+                      alt={match.player2Name}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {match.player2Name}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-4xl font-bold mt-3 ${
+                      player2Won ? "text-primary" : ""
+                    }`}
+                  >
+                    {match.player2Score}
+                  </span>
+                </div>
+              </div>
+
+              {/* Match Tags */}
+              {(match.extraTime || match.penalties) && (
+                <div className="flex justify-center gap-2 mt-4 pt-4 border-t">
+                  {match.extraTime && <Badge variant="outline">After Extra Time</Badge>}
+                  {match.penalties && <Badge variant="outline">Penalties</Badge>}
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
+
+      {/* Achievements Section */}
+      {achievements.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-amber-500" />
+              Achievements Unlocked ({achievements.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {achievements.map((achievement) => (
+                <div
+                  key={achievement.id}
+                  className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20"
+                >
+                  <span className="text-2xl">{achievement.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm">{achievement.name}</span>
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] px-1.5 py-0 flex items-center gap-1"
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${rarityColors[achievement.rarity]}`} />
+                        {achievement.rarity.charAt(0).toUpperCase() + achievement.rarity.slice(1)}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <img
+                      src={achievement.playerAvatar}
+                      alt={achievement.playerName}
+                      className="w-6 h-6 rounded-full"
+                    />
+                    <span className="text-xs text-muted-foreground">{achievement.playerName}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Comments Section */}
       <Card>
